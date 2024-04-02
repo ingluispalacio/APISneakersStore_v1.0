@@ -11,7 +11,7 @@
     },
     "servers": [
       {
-        "url": "http://localhost:3001/api/v1/",
+        "url": "https://apisneakersstore-v1-0.onrender.com/api/v1/",
         "description": "Servidor HTTPS"
       }
     ],
@@ -53,7 +53,7 @@
     ],
    
     "paths": {
-      "/singin": {
+      "/auth/singin": {
         "post": {
           "tags": ["Auth"],
           "summary": "Sing In",
@@ -101,7 +101,7 @@
           }
         }
       },
-      "/singup": {
+      "/auth/singup": {
         "post": {
           "tags": ["Auth"],
           "summary": "Sing Up",
@@ -136,7 +136,7 @@
         }
       },
 
-      "/users": {
+      "/user": {
         "get": {
           "tags": ["Users"],
           "summary": "Get all users",
@@ -164,7 +164,7 @@
           }
         }
       },
-      "/users/{id}": {
+      "/user/{id}": {
         "get": {
           "tags": ["Users"],
           "summary": "Get user by ID",
@@ -496,7 +496,7 @@
 
        },
 
-       "/promotions": {
+       "/promotion": {
         "get": {
           "tags": ["Promotions"],
           "summary": "Get all promotions",
@@ -559,7 +559,7 @@
           }
         }
       },
-      "/promotions/{id}": {
+      "/promotion/{id}": {
         "get": {
           "tags": ["Promotions"],
           "summary": "Get promotion by ID",
