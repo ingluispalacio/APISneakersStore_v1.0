@@ -1,0 +1,821 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "1.0.0",
+      "description": "Sneaker Store API Documentation",
+      "title": "API REST Sneakers Store",
+      "contact": {
+        "name": "Ing. Luis Palacio",
+        "email": "palaciodimasluisenrique@gmail.com"
+      }
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3001/api/v1/",
+        "description": "Servidor HTTPS"
+      }
+    ],
+    "externalDocs": {
+      "description": "Repositorio de la aplicación en GitHub",
+      "url": "https://github.com/ingluispalacio/APISneakersStore_v1.0"
+    },
+    "tags": [
+      {
+        "name": "Auth",
+        "description": "Endpoints for Authentication"
+      },
+      {
+        "name": "Users",
+        "description": "Endpoints to manage users"
+      },
+      {
+        "name": "Products",
+        "description": "Endpoints to manage products"
+      },
+      {
+        "name": "Promotion",
+        "description": "Endpoints to manage promotions"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+   
+    "paths": {
+      "/singin": {
+        "post": {
+          "tags": ["Auth"],
+          "summary": "Sing In",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "email"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "password"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful login",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/LoginResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Incorrect Credentials. Check your email and password"
+            },
+            "404": {
+              "description": "Incorrect Credentials. Check your email"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/singup": {
+        "post": {
+          "tags": ["Auth"],
+          "summary": "Sing Up",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/AuthInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful creation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/AuthResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "name, email, password attributes are required"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+
+      "/users": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Get all users",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/User" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/users/{id}": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Get user by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "User ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/definitions/User" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Users"],
+          "summary": "Update user by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "User ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/UserUpdateInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/User" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Users"],
+          "summary": "Delete user by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "User ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+
+      "/products": {
+        "get": {
+          "tags": ["Products"],
+          "summary": "Get all products",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/Product" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "post": {
+          "tags": ["Products"],
+          "summary": "Create a new product",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProductInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/Product" }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "name, brand, price, stock attributes are required"
+            },
+            "400": {
+              "description": "There is already a product with that name"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/products/prince/{userId}/{name}": {
+        "get": {
+          "tags": ["Products"],
+          "summary": "Get special price of a product for a user",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "userId",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "User ID"
+            },
+            {
+              "in": "path",
+              "name": "name",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Product name"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "precio": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "User not found or Product not found. The user/product must exist to be able to consult the special price"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/products/{id}": {
+        "get": {
+          "tags": ["Products"],
+          "summary": "Get product by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Product ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/definitions/Product" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Products"],
+          "summary": "Update product by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Product ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/ProductInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/Product" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Products"],
+          "summary": "Delete product by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Product ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+
+       },
+
+       "/promotions": {
+        "get": {
+          "tags": ["Promotions"],
+          "summary": "Get all promotions",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/Promotion" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "post": {
+          "tags": ["Promotions"],
+          "summary": "Create a new promotion",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/PromotionInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/Promotion" }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "userId, productName, specialPrice attributes are required"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/promotions/{id}": {
+        "get": {
+          "tags": ["Promotions"],
+          "summary": "Get promotion by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Promotion ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "data": { "$ref": "#/definitions/Promotion" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Promotions"],
+          "summary": "Update promotion by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Promotion ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/PromotionInput" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" },
+                      "data": { "$ref": "#/definitions/Promotion" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Promotions"],
+          "summary": "Delete promotion by ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": { "type": "string" },
+              "description": "Promotion ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "message": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+
+    },
+    "definitions": {
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expira": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "AuthInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+
+      "User": {
+          "type": "object",
+          "properties": {
+            "_id": { "type": "string" },
+            "name": { "type": "string" },
+            "email": { "type": "string" },
+            "password": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+      },
+      "UserUpdateInput": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string" },
+            "password": { "type": "string" }
+          },
+          "required": ["name", "email", "password"]
+      },
+
+      "Product": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "brand": { "type": "string" },
+          "price": { "type": "number" },
+          "stock": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProductInput": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "brand": { "type": "string" },
+          "price": { "type": "number" },
+          "stock": { "type": "number" }
+        },
+        "required": ["name", "brand", "price", "stock"]
+      },
+
+      "Promotion": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "userId": { "type": "string" },
+          "productName": { "type": "string" },
+          "specialPrice": { "type": "number" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PromotionInput": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "productName": { "type": "string" },
+          "specialPrice": { "type": "number" }
+        },
+        "required": ["userId", "productName", "specialPrice"]
+      }
+
+    }
+  
+ }
